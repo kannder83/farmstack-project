@@ -10,10 +10,6 @@ from bson.objectid import ObjectId
 todo = APIRouter()
 
 
-@todo.get("/")
-async def read_root():
-    return {"msg": "OK", "data": "This work fine!"}
-
 
 @todo.get("/api/todo")
 async def find_all_todos():
@@ -22,7 +18,17 @@ async def find_all_todos():
     except:
         raise HTTPException(status_code=404, detail="No ToDos found.")
 
-@todo.get("/api/todo/{title}")
+
+@todo.post("/api/todo")
+async def create_todo(todo: Todo):
+    try:
+        id = collection.insert_one(dict(todo)).inserted_id
+        return {"msg": "ok", "data": todoEntity(collection.find_one({"_id": ObjectId(id)}))}
+    except:
+        raise HTTPException(status_code=404, detail="No ToDo has been created.")
+
+
+@todo.get("/api/todo/title/{title}")
 async def find_post(title:str):
     try:            
         list_posts=[]
@@ -35,25 +41,20 @@ async def find_post(title:str):
     except:
         raise HTTPException(status_code=404, detail="No ToDo found.")
 
-@todo.get("/api/todo/{word}")
-async def find_post_word(word:str):
-    try:            
-        list_posts=[]
-        for post in collection.find({"$text": {"$search": word}}):
-            print(post)
-            list_posts.append(post)
-        if list_posts!=[]:
-            return todosEntity(list_posts)
-        raise HTTPException(status_code=404, detail="No ToDo found.")
-    except:
-        raise HTTPException(status_code=404, detail="No ToDo found.")
 
-@todo.post("/api/todo")
-async def create_todo(todo: Todo):
+@todo.put("/api/todo/{id}")
+async def update_post(id:str,todo:Todo):
     try:
-        id = collection.insert_one(dict(todo)).inserted_id
-        return {"msg": "ok", "data": todoEntity(collection.find_one({"_id": ObjectId(id)}))}
+        todoEntity(collection.find_one_and_update({"_id":ObjectId(id)},{"$set":dict(todo)}))            
+        return todoEntity(collection.find_one({"_id": ObjectId(id)}))
     except:
-        raise HTTPException(status_code=404, detail="No ToDo has been created.")
+        raise HTTPException(status_code=404, detail="No ToDo found.")
 
-        
+
+@todo.delete("/api/todo/{id}")
+async def delete_post(id:str):
+    try:
+        todoEntity(collection.find_one_and_delete({"_id":ObjectId(id)}))            
+        return {"msg":"ok","data":f'Post ID:{id} has been removed.'}
+    except:
+        raise HTTPException(status_code=404, detail="No ToDo found.")
