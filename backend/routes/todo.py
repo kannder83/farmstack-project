@@ -17,10 +17,43 @@ async def read_root():
 
 @todo.get("/api/todo")
 async def find_all_todos():
-    return todosEntity(collection.find())
+    try:
+        return todosEntity(collection.find())
+    except:
+        raise HTTPException(status_code=404, detail="No ToDos found.")
 
+@todo.get("/api/todo/{title}")
+async def find_post(title:str):
+    try:            
+        list_posts=[]
+        for post in collection.find({"title": title}):
+            print(post)
+            list_posts.append(post)
+        if list_posts!=[]:
+            return todosEntity(list_posts)
+        raise HTTPException(status_code=404, detail="No ToDo found.")
+    except:
+        raise HTTPException(status_code=404, detail="No ToDo found.")
+
+@todo.get("/api/todo/{word}")
+async def find_post_word(word:str):
+    try:            
+        list_posts=[]
+        for post in collection.find({"$text": {"$search": word}}):
+            print(post)
+            list_posts.append(post)
+        if list_posts!=[]:
+            return todosEntity(list_posts)
+        raise HTTPException(status_code=404, detail="No ToDo found.")
+    except:
+        raise HTTPException(status_code=404, detail="No ToDo found.")
 
 @todo.post("/api/todo")
-def create_todo(todo: Todo):
-    id = collection.insert_one(dict(todo)).inserted_id
-    return {"msg": "ok", "data": todoEntity(collection.find_one({"_id": ObjectId(id)}))}
+async def create_todo(todo: Todo):
+    try:
+        id = collection.insert_one(dict(todo)).inserted_id
+        return {"msg": "ok", "data": todoEntity(collection.find_one({"_id": ObjectId(id)}))}
+    except:
+        raise HTTPException(status_code=404, detail="No ToDo has been created.")
+
+        
