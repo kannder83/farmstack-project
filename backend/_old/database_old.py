@@ -1,5 +1,5 @@
 
-from model import Todo
+from model_old import Todo
 from decouple import config
 
 # mongoDB Driver
