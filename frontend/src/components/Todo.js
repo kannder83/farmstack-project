@@ -1,31 +1,19 @@
-import axios from "axios";
-import React from "react";
-
-function TodoItem(props) {
-  const deleteTodoHandler = (title) => {
-    axios
-      .delete(`http://localhost:8000/api/todo/${title}`)
-      .then((res) => console.log(res.data));
-  };
-
+const Todo = ({ todo, handleDelete }) => {
   return (
-    <div>
-      <p>
-        <span style={{ fontWeight: "bold, underline" }}>
-          {props.todo.title} :{" "}
-        </span>{" "}
-        {props.todo.description}
-        <button
-          onClick={() => deleteTodoHandler(props.todo.title)}
-          className="btn btn-outline-danger my-2 mx-2"
-          style={{ borderRadius: "50px" }}
-        >
-          X
-        </button>
-        <hr></hr>
-      </p>
-    </div>
+    <form>
+      <input type="text" defaultValue={todo.title} readOnly={true} />
+      <input type="text" defaultValue={todo.description} readOnly={true} />
+      <input type="submit" value="update" />
+      <input
+        type="submit"
+        value="delete"
+        onClick={(e) => {
+          e.preventDefault();
+          handleDelete(todo.id);
+        }}
+      />
+    </form>
   );
-}
+};
 
-export default TodoItem;
+export { Todo };
