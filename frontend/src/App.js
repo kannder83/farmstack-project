@@ -1,6 +1,11 @@
 import axios from "axios";
+import { Header } from "./components/Header";
+import { Footer } from "./components/Footer";
+import { Home } from "./pages/Home";
+import { TodoPage } from "./pages/TodoPage";
+import { About } from "./pages/About";
 import { useState, useEffect } from "react";
-import { TodoList } from "./components/TodoList";
+import { Routes, Route } from "react-router-dom";
 
 function App() {
   const URL = "http://localhost:8000/api/todo";
@@ -23,8 +28,21 @@ function App() {
 
   return (
     <div className="App">
-      <h1>This is react!</h1>
-      <TodoList todoList={todoList} handleDelete={handleDelete} />
+      <Header />
+      <Routes>
+        <Route
+          path="/"
+          element={<Home handleDelete={handleDelete} todoList={todoList} />}
+        />
+        <Route path="about" element={<About />} />
+        <Route
+          path="post/:id"
+          element={<TodoPage handleDelete={handleDelete} todoList={todoList} />}
+        />
+        <Route path="*" element={<p>nothing</p>} />
+      </Routes>
+
+      <Footer />
     </div>
   );
 }
