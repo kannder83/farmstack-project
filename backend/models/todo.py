@@ -3,21 +3,25 @@ from pydantic import Field
 from bson.objectid import ObjectId
 
 
-# class Todo(BaseModel):
-#     _id: ObjectId
-#     title: str = Field(
-#         ...,
-#         min_length=1,
-#         max_length=100,
-#         regex='^[A-Za-z]*$'
-#     )
-#     description: str = Field(
-#         ...,
-#         min_length=1,
-#         max_length=200
-#     )
-
-class Todo(BaseModel):
+class TodoBase(BaseModel):
     _id: ObjectId
-    title: str
-    description: str
+    title: str = Field(
+        ...,
+        min_length=1,
+        max_length=100,
+        example="Title ToDo"
+    )
+    description: str = Field(
+        ...,
+        min_length=1,
+        max_length=200,
+        example="Description ToDo"
+    )
+
+
+class Todo(TodoBase):
+    pass
+
+
+class TodoOut(TodoBase):
+    pass
