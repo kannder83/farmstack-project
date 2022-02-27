@@ -1,3 +1,4 @@
+from turtle import title
 from pydantic import BaseModel
 from pydantic import Field
 from bson.objectid import ObjectId
@@ -24,4 +25,6 @@ class Todo(TodoBase):
 
 
 class TodoOut(TodoBase):
-    pass
+    id: str = Field(..., example="ID Object")
+    title: str = Field(..., example="Title ToDo")
+    description: str = Field(..., example="Description ToDo")

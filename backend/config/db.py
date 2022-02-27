@@ -1,7 +1,9 @@
 from pymongo import MongoClient
-from decouple import config
+from .config import settings
 
-client = MongoClient(config("URL"))
+DB_URL = f'mongodb+srv://{settings.database_username}:{settings.database_password}@{settings.database_hostname}/{settings.database_name}?retryWrites=true&w=majority'
+
+client = MongoClient(DB_URL)
 
 database = client.TodoList
 collection = database.todo

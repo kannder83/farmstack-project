@@ -1,9 +1,11 @@
 from config.db import collection
-from models.todo import Todo
+from app.models.todo import Todo
+from typing import List
 
 from fastapi import APIRouter, HTTPException
 from fastapi import status
-from schemas.todo import todoEntity, todosEntity
+from app.schemas.todo import todoEntity, todosEntity
+from app.models.todo import TodoOut
 from bson.objectid import ObjectId
 
 
@@ -14,9 +16,10 @@ todo = APIRouter()
     path="/api/todo",
     status_code=status.HTTP_200_OK,
     tags=["ToDo"],
-    summary="Returns all ToDos created in the app."
+    summary="Returns all ToDos created in the app.",
+    response_model=List[TodoOut]
 )
-async def find_all_todos():
+def find_all_todos():
     """
     **Find all ToDos**
 
@@ -40,7 +43,7 @@ async def find_all_todos():
     tags=["ToDo"],
     summary="Create a ToDo"
 )
-async def create_todo(todo: Todo):
+def create_todo(todo: Todo):
     """
     **Create a ToDo**
 
@@ -65,7 +68,7 @@ async def create_todo(todo: Todo):
     tags=["ToDo"],
     summary="Returns a specific ToDo"
 )
-async def find_post(title: str):
+def find_post(title: str):
     """
     **Returns a specific ToDo**
 
@@ -79,7 +82,6 @@ async def find_post(title: str):
     try:
         list_posts = []
         for post in collection.find({"title": title}):
-            print(post)
             list_posts.append(post)
         if list_posts != []:
             return todosEntity(list_posts)
@@ -97,7 +99,7 @@ async def find_post(title: str):
     tags=["ToDo"],
     summary="Update a ToDo"
 )
-async def update_post(id: str, todo: Todo):
+def update_post(id: str, todo: Todo):
     """
     **Update a specific ToDo**
 
@@ -124,7 +126,7 @@ async def update_post(id: str, todo: Todo):
     tags=["ToDo"],
     summary="Delete a specific ToDo"
 )
-async def delete_post(id: str):
+def delete_post(id: str):
     """
     **Delete a specific ToDo**
 

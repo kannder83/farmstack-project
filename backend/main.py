@@ -1,19 +1,18 @@
-from fastapi import FastAPI
-from routes.todo import todo
-from fastapi.middleware.cors import CORSMiddleware
-
-app = FastAPI()
+import uvicorn
 
 
-origins = ["http://localhost:3000"]
+def main():
+    """
+    Main
+    It runs a fastapi server using uvicorn
+    """
+    uvicorn.run(
+        "config.app:application",
+        host="0.0.0.0",
+        port=8000,
+        reload=True,
+    )
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"]
-)
 
-
-app.include_router(todo)
+if __name__ == "__main__":
+    main()
