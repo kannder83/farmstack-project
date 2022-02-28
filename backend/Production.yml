@@ -4,7 +4,7 @@ services:
     container_name: dev_todo_api
     build:
       context: .
-      dockerfile: ./compose/dev/Dockerfile
+      dockerfile: ./compose/prod/Dockerfile
     ports:
       - 8000:8000
     environment:
